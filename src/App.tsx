@@ -1,7 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
+
+// Conditionally import ReactQueryDevtools only in development
+const ReactQueryDevtools = process.env.NODE_ENV === 'development' 
+  ? require('@tanstack/react-query-devtools').ReactQueryDevtools 
+  : null;
 
 import Layout from '@/components/Layout';
 import Dashboard from '@/pages/Dashboard';
@@ -49,7 +53,9 @@ function App() {
           />
         </div>
       </Router>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {process.env.NODE_ENV === 'development' && (
+        <ReactQueryDevtools initialIsOpen={false} />
+      )}
     </QueryClientProvider>
   );
 }
