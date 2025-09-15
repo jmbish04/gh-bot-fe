@@ -46,8 +46,63 @@ async function handleApiRequest(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
   const path = url.pathname.replace('/api', '');
   
-  // Proxy requests to the GitHub Bot API
+  console.log(`API request: ${request.method} ${path}`);
+  
+  // Mock API responses for testing
+  if (path === '/stats') {
+    return new Response(JSON.stringify({
+      projects: 8,
+      commands: 117,
+      practices: 12,
+      analyses: 4,
+      operations: 3,
+      repositories: 8
+    }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      }
+    });
+  }
+  
+  if (path === '/research/status') {
+    return new Response(JSON.stringify({
+      status: 'idle',
+      progress: 0,
+      current_operation: 'Ready to start research'
+    }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      }
+    });
+  }
+  
+  if (path === '/health') {
+    return new Response(JSON.stringify({
+      status: 'healthy',
+      timestamp: new Date().toISOString()
+    }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      }
+    });
+  }
+  
+  // For other endpoints, try to proxy to the backend
   const apiUrl = `https://gh-bot.hacolby.workers.dev${path}${url.search}`;
+  
+  console.log(`Proxying API request: ${request.method} ${path} -> ${apiUrl}`);
   
   try {
     const response = await fetch(apiUrl, {
@@ -58,6 +113,8 @@ async function handleApiRequest(request: Request, env: Env): Promise<Response> {
       },
       body: request.method !== 'GET' ? await request.text() : undefined,
     });
+
+    console.log(`API response: ${response.status} ${response.statusText}`);
 
     // Add CORS headers
     const headers = new Headers(response.headers);
@@ -73,7 +130,7 @@ async function handleApiRequest(request: Request, env: Env): Promise<Response> {
   } catch (error) {
     console.error('API Proxy Error:', error);
     return new Response(
-      JSON.stringify({ error: 'Failed to connect to API' }),
+      JSON.stringify({ error: 'Failed to connect to API', details: error.message }),
       { 
         status: 500,
         headers: { 'Content-Type': 'application/json' }
