@@ -1,5 +1,5 @@
 {
-  "name": "gh-bot-frontend",
+  "name": "gh-bot-fe",
   "version": "1.0.0",
   "description": "Frontend for Colby GitHub Bot API",
   "main": "src/index.ts",
