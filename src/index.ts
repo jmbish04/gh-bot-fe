@@ -1,5 +1,5 @@
 interface Env {
-  ASSETS: Fetcher;
+  STATIC_ASSETS: Fetcher;
 }
 
 export default {
@@ -12,7 +12,7 @@ export default {
     }
 
     // Serve static assets
-    return env.ASSETS.fetch(request);
+    return env.STATIC_ASSETS.fetch(request);
   },
 } satisfies ExportedHandler<Env>;
 

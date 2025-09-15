@@ -5,11 +5,11 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "wrangler pages dev public --compatibility-date=2025-02-11",
+    "dev": "wrangler dev --compatibility-date=2025-02-11",
     "build": "npm run build:react && npm run build:worker",
     "build:react": "vite build",
     "build:worker": "esbuild src/index.ts --bundle --format=esm --outfile=public/_worker.js",
-    "deploy": "wrangler pages deploy public --project-name=gh-bot-fe",
+    "deploy": "wrangler deploy",
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "vitest"

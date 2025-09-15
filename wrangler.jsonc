@@ -3,11 +3,10 @@
   "main": "public/_worker.js",
   "compatibility_date": "2025-02-11",
   "compatibility_flags": ["nodejs_compat"],
-  "pages_build_output_dir": "public",
   "assets": {
     "directory": "./public/",
     "not_found_handling": "single-page-application",
-    "binding": "ASSETS"
+    "binding": "STATIC_ASSETS"
   },
   "observability": {
     "enabled": true,
