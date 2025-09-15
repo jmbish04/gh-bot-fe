@@ -1,12 +1,12 @@
 {
   "name": "gh-bot-fe",
   "main": "public/_worker.js",
-  "compatibility_date": "2025-02-11",
+  "compatibility_date": "2025-03-07",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./public/",
-    "not_found_handling": "single-page-application",
-    "binding": "STATIC_ASSETS"
+    "not_found_handling": "serve",
+    "binding": "ASSETS"
   },
   "observability": {
     "enabled": true,

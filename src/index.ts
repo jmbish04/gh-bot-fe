@@ -1,5 +1,5 @@
 interface Env {
-  STATIC_ASSETS: Fetcher;
+  ASSETS: Fetcher;
 }
 
 export default {
@@ -11,10 +11,36 @@ export default {
       return handleApiRequest(request, env);
     }
 
-    // Serve static assets
-    return env.STATIC_ASSETS.fetch(request);
+    // Serve static assets with multi-page handling
+    return handleStaticRequest(request, env);
   },
 } satisfies ExportedHandler<Env>;
+
+async function handleStaticRequest(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url);
+  
+  // Try to serve the requested file from ASSETS
+  const response = await env.ASSETS.fetch(request);
+  
+  // If the file exists, return it
+  if (response.status !== 404) {
+    return response;
+  }
+  
+  // For multi-page handling, try to serve index.html for non-API routes
+  // that don't have a file extension (likely a page route)
+  if (!url.pathname.includes('.')) {
+    const indexRequest = new Request(new URL('/index.html', request.url), request);
+    const indexResponse = await env.ASSETS.fetch(indexRequest);
+    
+    if (indexResponse.status !== 404) {
+      return indexResponse;
+    }
+  }
+  
+  // If nothing found, return 404
+  return new Response('Not Found', { status: 404 });
+}
 
 async function handleApiRequest(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
